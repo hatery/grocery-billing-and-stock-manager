@@ -9,12 +9,12 @@ Run the doctests with:  python -m doctest -v grocery_billing_manager.py
 """
 
 # ---------------------------------------------------------------- constants
-STOCK_FILE = "stock.txt"
-BILL_FILE = "bills.txt"
-GST_PERCENT = 5            # GST added on every bill
-DISCOUNT_LIMIT = 1000.0    # discount applies when subtotal reaches this
-DISCOUNT_PERCENT = 10      # discount percentage
-LOW_STOCK_LIMIT = 5        # warn when quantity is at or below this
+Stock_File = "stock.txt"
+Bill_File = "bills.txt"
+GST_Percentage = 5            # GST added on every bill
+Discount_Limit = 1000.0    # discount applies when subtotal reaches this
+Discount_Percentage = 10      # discount percentage
+Low_Stock_Limit = 5        # warn when quantity is at or below this
 
 CATEGORIES = {"grains", "dairy", "snacks", "beverages", "vegetables"}
 
