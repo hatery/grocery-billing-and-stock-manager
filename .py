@@ -116,7 +116,7 @@ def load_stock(filename):
     return stock
 
 
-def save_stock(stock, filename):
+def save_stock(stock,filename):
     try:
         with open(filename, "w", encoding="utf-8") as file:
             for name in sorted(stock):
