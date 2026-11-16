@@ -1,24 +1,11 @@
-"""
-Project 4: Grocery Billing and Stock Manager  (Group 4)
-
-A menu-driven program for a small grocery shop.
-No modules are imported; only built-in functions are used.
-Data is saved in plain .txt files (stock.txt and bills.txt).
-
-Run the doctests with:  python -m doctest -v grocery_billing_manager.py
-"""
-
-# ---------------------------------------------------------------- constants
-STOCK_FILE = "stock.txt"
+STOCK_FILE ="stock.txt"
 BILL_FILE = "bills.txt"
-GST_PERCENT = 5            # GST added on every bill
-DISCOUNT_LIMIT = 1000.0    # discount applies when subtotal reaches this
-DISCOUNT_PERCENT = 10      # discount percentage
-LOW_STOCK_LIMIT = 5        # warn when quantity is at or below this
+GST_PERCENT = 5
+DISCOUNT_LIMIT = 1000.0
+DISCOUNT_PERCENT = 10
+LOW_STOCK_LIMIT = 5
 
-# A set of item categories (unique, quick-lookup data)
-CATEGORIES = {"grains", "dairy", "snacks", "beverages", "vegetables"}
-
+CATEGORIES = {"grains","dairy","snacks","beverages","vegetables"}
 
 DEFAULT_STOCK = {
     "rice": {"price_unit": (60.0, "kg"), "qty": 50, "category": "grains"},
@@ -30,40 +17,19 @@ DEFAULT_STOCK = {
     "tea": {"price_unit": (120.0, "packet"), "qty": 15, "category": "beverages"},
     "potato": {"price_unit": (30.0, "kg"), "qty": 35, "category": "vegetables"},
 }
-
-
-# ---------------------------------------------------------- input helpers
+def get_default_stock():
+    return {name: dict(details) for name, details in DEFAULT_STOCK.items()}
 def clean_text(text):
-    """Strip extra spaces and make the text lower case.
-
-    >>> clean_text("   Wheat   FLOUR ")
-    'wheat   flour'
-    >>> clean_text("")
-    ''
-    """
     return text.strip().lower()
-
-
 def normalise_name(text):
-    """Clean an item name and squeeze repeated inner spaces using split/join.
-
-    >>> normalise_name("  Wheat    FLOUR ")
-    'wheat flour'
-    """
     return " ".join(clean_text(text).split())
-
-
 def read_positive_int(prompt):
-    """Ask until the user types a whole number greater than zero."""
     while True:
         text = input(prompt).strip()
         if text.isdigit() and int(text) > 0:
             return int(text)
         print("  Invalid input. Please enter a whole number above 0.")
-
-
 def read_positive_float(prompt):
-    """Ask until the user types a number greater than zero (e.g. 12.50)."""
     while True:
         text = input(prompt).strip()
         try:
@@ -76,33 +42,14 @@ def read_positive_float(prompt):
 
 
 def read_nonempty(prompt):
-    """Ask until the user types something that is not empty; return it cleaned."""
     while True:
         text = normalise_name(input(prompt))
         if text != "":
             return text
-        print("  Input cannot be empty. Try again.")
-
-
-#  calculations
-def total_amounts(amounts):
-
-    if len(amounts) == 0:         
-        return 0
-    return amounts[0] + total_amounts(amounts[1:])
+        print("Input cannot be empty. Try again.")
 
 
 def calculate_charges(subtotal):
-    """Return (discount, gst, grand_total) for a bill subtotal.
-
-    A discount is given only when the subtotal reaches DISCOUNT_LIMIT.
-    GST is charged on the amount after discount.
-
-    >>> calculate_charges(500.0)
-    (0.0, 25.0, 525.0)
-    >>> calculate_charges(2000.0)
-    (200.0, 90.0, 1890.0)
-    """
     if subtotal >= DISCOUNT_LIMIT:
         discount = subtotal * DISCOUNT_PERCENT / 100
     else:
@@ -113,24 +60,12 @@ def calculate_charges(subtotal):
 
 
 def is_low_stock(quantity):
-    """Return True when the quantity is at or below the low-stock limit.
-
-    >>> is_low_stock(3)
-    True
-    >>> is_low_stock(50)
-    False
-    """
     return quantity <= LOW_STOCK_LIMIT
 
 
-#  file handling
 def next_bill_number(filename):
-    """Return the next bill number by counting the bills already saved.
-
-    The first bill is 1001. A missing or unreadable file also gives 1001.
-    """
     try:
-        with open(filename, "r") as file:
+        with open(filename, "r", encoding="utf-8") as file:
             saved_bills = file.read().count("GROCERY BILL")
     except OSError:
         saved_bills = 0
@@ -138,14 +73,9 @@ def next_bill_number(filename):
 
 
 def load_stock(filename):
-    """Load stock from a text file (name|category|price|unit|qty per line).
-
-    If the file is missing, the default stock is returned instead.
-    Bad lines are skipped with a message; the program never crashes.
-    """
     stock = {}
     try:
-        with open(filename, "r") as file:
+        with open(filename, "r", encoding="utf-8") as file:
             for line in file:
                 line = line.strip()
                 if line == "":
@@ -163,25 +93,29 @@ def load_stock(filename):
                     print("  Skipped a damaged line in", filename + ":", line)
     except FileNotFoundError:
         print("  No stock file found. Starting with default stock.")
-        return dict(DEFAULT_STOCK)
+        return get_default_stock()
     except OSError:
         print("  Could not read the stock file. Using default stock.")
-        return dict(DEFAULT_STOCK)
+        return get_default_stock()
     if len(stock) == 0:
         print("  Stock file was empty. Using default stock.")
-        return dict(DEFAULT_STOCK)
+        return get_default_stock()
     return stock
 
 
 def save_stock(stock, filename):
-    """Write the whole stock dictionary to a text file. Return True if saved."""
     try:
-        with open(filename, "w") as file:
+        with open(filename, "w", encoding="utf-8") as file:
             for name in sorted(stock):
                 record = stock[name]
                 price, unit = record["price_unit"]
-                line = "|".join([name, record["category"], str(price), unit,
-                                 str(record["qty"])])
+                line = "|".join([
+                    name,
+                    record["category"],
+                    str(price),
+                    unit,
+                    str(record["qty"]),
+                ])
                 file.write(line + "\n")
         return True
     except OSError:
@@ -190,9 +124,8 @@ def save_stock(stock, filename):
 
 
 def save_bill(lines, filename):
-    """Append the bill text (a list of strings) to the bills file."""
     try:
-        with open(filename, "a") as file:
+        with open(filename, "a", encoding="utf-8") as file:
             for line in lines:
                 file.write(line + "\n")
             file.write("\n")
@@ -202,15 +135,7 @@ def save_bill(lines, filename):
         return False
 
 
-# formatting
 def format_cell(value, width):
-    """Format one table cell: numbers right-aligned, text left-aligned.
-
-    >>> format_cell("rice", 8)
-    'rice    '
-    >>> format_cell(12.5, 8)
-    '   12.50'
-    """
     if isinstance(value, float):
         return f"{value:.2f}".rjust(width)
     if isinstance(value, int):
@@ -219,11 +144,6 @@ def format_cell(value, width):
 
 
 def build_bill_lines(bill_no, records, subtotal, discount, gst, grand_total):
-    """Build the bill as a list of text lines (used for screen and file).
-
-    The table is printed with nested loops: one loop over records and an
-    inner loop over the fields of each record.
-    """
     widths = [18, 6, 10, 12]
     headings = ["Item", "Qty", "Rate", "Amount"]
     line = "-" * 46
@@ -234,9 +154,9 @@ def build_bill_lines(bill_no, records, subtotal, discount, gst, grand_total):
         header += headings[index].ljust(widths[index])
     lines.extend([header, line])
 
-    for record in records:                       # outer loop: each item
+    for record in records:
         row = ""
-        for index in range(len(record)):         # inner loop: each field
+        for index in range(len(record)):
             row += format_cell(record[index], widths[index])
         lines.append(row)
 
@@ -250,27 +170,26 @@ def build_bill_lines(bill_no, records, subtotal, discount, gst, grand_total):
     return lines
 
 
-
 def show_stock(stock):
-    """Print stock grouped by category using nested loops."""
     print("\n" + "STOCK BY CATEGORY".center(54))
-    for category in sorted(CATEGORIES):              # outer loop: categories
+    for category in sorted(CATEGORIES):
         print("\n[" + category.title() + "]")
         found = False
-        for name in sorted(stock):                   # inner loop: items
+        for name in sorted(stock):
             record = stock[name]
             if record["category"] == category:
                 price, unit = record["price_unit"]
                 note = "  <-- LOW STOCK" if is_low_stock(record["qty"]) else ""
-                print(f"  {name.title():<16} Rs {price:>7.2f}/{unit:<7}"
-                      f" Qty: {record['qty']:>4}{note}")
+                print(
+                    f"  {name.title():<16} Rs {price:>7.2f}/{unit:<7}"
+                    f" Qty: {record['qty']:>4}{note}"
+                )
                 found = True
         if not found:
             print("  (no items)")
 
 
 def add_new_item(stock):
-    """Add a brand new item to the stock dictionary."""
     name = read_nonempty("Item name: ")
     if name in stock:
         print("  That item already exists. Use 'Restock' instead.")
@@ -287,7 +206,6 @@ def add_new_item(stock):
 
 
 def restock_item(stock):
-    """Increase the quantity of an existing item."""
     name = read_nonempty("Item to restock: ")
     if name not in stock:
         print("  Item not found.")
@@ -297,18 +215,17 @@ def restock_item(stock):
     print(f"  {name.title()} now has {stock[name]['qty']} in stock.")
 
 
-# ---------------------------------------------------------------- billing
 def put_back(stock, record):
-    """Return the quantity of a removed bill record to the stock."""
     stock[record[0].lower()]["qty"] += record[1]
 
 
 def create_bill(stock):
-    """Create a bill for several items; update stock and save the files."""
-    records = []        # list of records: [name, qty, rate, amount]
+    records = []
     print("\nType item names to add to the bill.")
-    print("Commands: 'done' = finish, 'remove' = remove last item, "
-          "'cancel' = cancel bill")
+    print(
+        "Commands: 'done' = finish, 'remove' = remove last item, "
+        "'cancel' = cancel bill"
+    )
 
     while True:
         command = normalise_name(input("\nItem name / command: "))
@@ -325,8 +242,7 @@ def create_bill(stock):
             if len(records) == 0:
                 print("  Nothing to remove.")
             else:
-                removed = records[-1]
-                records.remove(removed)
+                removed = records.pop()
                 put_back(stock, removed)
                 print("  Removed", removed[0] + ".")
         elif command not in stock:
@@ -344,15 +260,16 @@ def create_bill(stock):
             records.append([command.title(), qty, rate, qty * rate])
             stock[command]["qty"] -= qty
             if is_low_stock(stock[command]["qty"]):
-                print(f"  WARNING: only {stock[command]['qty']} "
-                      f"{command.title()} left. Please restock!")
+                print(
+                    f"  WARNING: only {stock[command]['qty']} "
+                    f"{command.title()} left. Please restock!"
+                )
 
     if len(records) == 0:
         print("  Empty bill. Nothing saved.")
         return
 
-    # Recursive total of all amounts, then discount and GST
-    subtotal = total_amounts([record[3] for record in records])
+    subtotal = sum(record[3] for record in records)
     discount, gst, grand_total = calculate_charges(subtotal)
     bill_no = next_bill_number(BILL_FILE)
 
@@ -361,7 +278,6 @@ def create_bill(stock):
     for line in lines:
         print(line)
 
-    # Slicing + sort: show the three biggest items of this bill
     ranked = sorted(records, key=lambda rec: rec[3], reverse=True)
     top_names = [rec[0] for rec in ranked[:3]]
     print("Top items by amount:", ", ".join(top_names))
@@ -373,7 +289,6 @@ def create_bill(stock):
 
 
 def show_low_stock(stock):
-    """Print every item whose stock is low."""
     low_items = [name for name in sorted(stock) if is_low_stock(stock[name]["qty"])]
     if len(low_items) == 0:
         print("\n  All items are well stocked.")
@@ -384,9 +299,8 @@ def show_low_stock(stock):
 
 
 def show_past_bills():
-    """Show the last part of the bills file (last 20 lines by slicing)."""
     try:
-        with open(BILL_FILE, "r") as file:
+        with open(BILL_FILE, "r", encoding="utf-8") as file:
             all_lines = file.read().split("\n")
     except FileNotFoundError:
         print("  No bills have been saved yet.")
@@ -399,9 +313,7 @@ def show_past_bills():
         print(line)
 
 
-# ------------------------------------------------------------------- main
 def show_menu():
-    """Print the main menu."""
     print("\n" + "=" * 40)
     print("  GROCERY BILLING AND STOCK MANAGER")
     print("=" * 40)
@@ -416,7 +328,6 @@ def show_menu():
 
 
 def main():
-    """Run the main menu loop until the user chooses Exit."""
     stock = load_stock(STOCK_FILE)
     while True:
         show_menu()
