@@ -16,7 +16,6 @@ DISCOUNT_LIMIT = 1000.0    # discount applies when subtotal reaches this
 DISCOUNT_PERCENT = 10      # discount percentage
 LOW_STOCK_LIMIT = 5        # warn when quantity is at or below this
 
-# A set of item categories (unique, quick-lookup data)
 CATEGORIES = {"grains", "dairy", "snacks", "beverages", "vegetables"}
 
 
