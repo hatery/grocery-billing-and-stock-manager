@@ -7,7 +7,6 @@ Data is saved in plain .txt files (stock.txt and bills.txt).
 
 Run the doctests with:  python -m doctest -v grocery_billing_manager.py
 """
-
 # ---------------------------------------------------------------- constants
 STOCK_FILE = "stock.txt"
 BILL_FILE = "bills.txt"
