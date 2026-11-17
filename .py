@@ -235,10 +235,8 @@ def put_back(stock, record):
 def create_bill(stock):
     records = []
     print("\nType item names to add to the bill.")
-    print(
-        "Commands: 'done' = finish, 'remove' = remove last item, "
-        "'cancel' = cancel bill"
-    )
+    print("Commands: 'done' = finish, 'remove' = remove last item, "
+        "'cancel' = cancel bill")
 
     while True:
         command = normalise_name(input("\nItem name / command: "))
