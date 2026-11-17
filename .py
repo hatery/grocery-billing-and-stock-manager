@@ -30,6 +30,7 @@ DEFAULT_STOCK = {
     "tea": {"price_unit": (120.0, "packet"), "qty": 15, "category": "beverages"},
     "potato": {"price_unit": (30.0, "kg"), "qty": 35, "category": "vegetables"},
 }
+
 def get_default_stock():
     return {name: dict(details) for name, details in DEFAULT_STOCK.items()}
 def clean_text(text):
@@ -51,7 +52,7 @@ def read_positive_float(prompt):
                 return value
             print("  The value must be greater than 0.")
         except ValueError:
-            print("  Invalid input. Please enter a number such as 25 or 12.5.")
+            print(" Invalid input. Please enter a number such as 25 or 12.5.")
 
 
 def read_nonempty(prompt):
@@ -102,6 +103,7 @@ def load_stock(filename):
                         "qty": int(qty),
                         "category": category,
                     }
+
                 except ValueError:
                     print("  Skipped a damaged line in", filename + ":", line)
     except FileNotFoundError:
@@ -116,7 +118,7 @@ def load_stock(filename):
     return stock
 
 
-def save_stock(stock, filename):
+def save_stock(stock,filename):
     try:
         with open(filename, "w", encoding="utf-8") as file:
             for name in sorted(stock):
@@ -241,7 +243,7 @@ def create_bill(stock):
     while True:
         command = normalise_name(input("\nItem name / command: "))
         if command == "":
-            print("  Input cannot be empty. Try again.")
+            print("  Input can't be empty. Try again.")
         elif command == "done":
             break
         elif command == "cancel":
