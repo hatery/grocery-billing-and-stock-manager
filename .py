@@ -1,6 +1,12 @@
 """
 Project 4: Grocery Billing and Stock Manager  (Group 4)
 
+Group Members-
+        Parth Gupta
+        Piyush Kumar
+        Mohd. Arshad Ali
+        Manikanta Chaudhary
+
 A menu-driven program for a small grocery shop.
 No modules are imported; only built-in functions are used.
 Data is saved in plain .txt files (stock.txt and bills.txt).
