@@ -1,5 +1,6 @@
 """
 Project 4: Grocery Billing and Stock Manager  (Group 4)
+<<<<<<< HEAD
 
 Group Members-
         Parth Gupta
@@ -7,10 +8,11 @@ Group Members-
         Mohd. Arshad Ali
         Manikanta Chaudhary
 
+=======
+>>>>>>> 3284ca0c9acd943ec4c73ae1ec8b9cbfd0c5e4aa
 A menu-driven program for a small grocery shop.
 No modules are imported; only built-in functions are used.
 Data is saved in plain .txt files (stock.txt and bills.txt).
-
 Run the doctests with:  python -m doctest -v grocery_billing_manager.py
 """
 
@@ -24,7 +26,6 @@ LOW_STOCK_LIMIT = 5        # warn when quantity is at or below this
 
 # A set of item categories (unique, quick-lookup data)
 CATEGORIES = {"grains", "dairy", "snacks", "beverages", "vegetables"}
-
 
 DEFAULT_STOCK = {
     "rice": {"price_unit": (60.0, "kg"), "qty": 50, "category": "grains"},
@@ -109,7 +110,6 @@ def load_stock(filename):
                         "qty": int(qty),
                         "category": category,
                     }
-
                 except ValueError:
                     print("  Skipped a damaged line in", filename + ":", line)
     except FileNotFoundError:
@@ -194,7 +194,7 @@ def build_bill_lines(bill_no, records, subtotal, discount, gst, grand_total):
 def show_stock(stock):
     print("\n" + "STOCK BY CATEGORY".center(54))
     for category in sorted(CATEGORIES):
-        print("\n[" + category.title() + "]")
+        print("\n["+ category.title()+"]")
         found = False
         for name in sorted(stock):
             record = stock[name]
@@ -202,12 +202,12 @@ def show_stock(stock):
                 price, unit = record["price_unit"]
                 note = "  <-- LOW STOCK" if is_low_stock(record["qty"]) else ""
                 print(
-                    f"  {name.title():<16} Rs {price:>7.2f}/{unit:<7}"
+                    f" {name.title():<16} Rs {price:>7.2f}/{unit:<7}"
                     f" Qty: {record['qty']:>4}{note}"
                 )
                 found = True
         if not found:
-            print("  (no items)")
+            print(" (no items)")
 
 
 def add_new_item(stock):
@@ -217,23 +217,23 @@ def add_new_item(stock):
         return
     category = read_nonempty("Category (" + ", ".join(sorted(CATEGORIES)) + "): ")
     if category not in CATEGORIES:
-        print("  Unknown category. Item not added.")
+        print(" Unknown category. Item not added.")
         return
     price = read_positive_float("Price per unit (Rs): ")
     unit = read_nonempty("Unit (kg / packet / piece / litre): ")
     qty = read_positive_int("Quantity in stock: ")
     stock[name] = {"price_unit": (price, unit), "qty": qty, "category": category}
-    print("  Added", name.title() + ".")
+    print(" Added", name.title() + ".")
 
 
 def restock_item(stock):
     name = read_nonempty("Item to restock: ")
     if name not in stock:
-        print("  Item not found.")
+        print(" Item not found.")
         return
     amount = read_positive_int("Quantity to add: ")
     stock[name]["qty"] += amount
-    print(f"  {name.title()} now has {stock[name]['qty']} in stock.")
+    print(f" {name.title()} now has {stock[name]['qty']} in stock.")
 
 
 def put_back(stock, record):
@@ -249,23 +249,23 @@ def create_bill(stock):
     while True:
         command = normalise_name(input("\nItem name / command: "))
         if command == "":
-            print("  Input can't be empty. Try again.")
+            print(" Input can't be empty. Try again.")
         elif command == "done":
             break
         elif command == "cancel":
             for record in records:
                 put_back(stock, record)
-            print("  Bill cancelled.")
+            print(" Bill cancelled.")
             return
         elif command == "remove":
             if len(records) == 0:
-                print("  Nothing to remove.")
+                print(" Nothing to remove.")
             else:
                 removed = records.pop()
                 put_back(stock, removed)
                 print("  Removed", removed[0] + ".")
         elif command not in stock:
-            print("  Item not found. Check the stock list (option 1).")
+            print(" Item not found. Check the stock list (option 1).")
         else:
             available = stock[command]["qty"]
             if available == 0:
@@ -280,12 +280,12 @@ def create_bill(stock):
             stock[command]["qty"] -= qty
             if is_low_stock(stock[command]["qty"]):
                 print(
-                    f"  WARNING: only {stock[command]['qty']} "
+                    f" WARNING: only {stock[command]['qty']} "
                     f"{command.title()} left. Please restock!"
                 )
 
     if len(records) == 0:
-        print("  Empty bill. Nothing saved.")
+        print(" Empty bill. Nothing saved.")
         return
 
     subtotal = sum(record[3] for record in records)
@@ -314,7 +314,7 @@ def show_low_stock(stock):
         return
     print("\nLOW STOCK ITEMS")
     for name in low_items:
-        print(f"  {name.title():<16} only {stock[name]['qty']} left")
+        print(f" {name.title():<16} only {stock[name]['qty']} left")
 
 
 def show_past_bills():
@@ -325,7 +325,7 @@ def show_past_bills():
         print("  No bills have been saved yet.")
         return
     except OSError:
-        print("  Could not read the bills file.")
+        print(" Could not read the bills file.")
         return
     print()
     for line in all_lines[-20:]:
@@ -375,7 +375,7 @@ def main():
             print("Stock saved. Goodbye!")
             break
         else:
-            print("  Invalid choice. Please pick a number from 1 to 8.")
+            print(" Invalid choice. Please pick a number from 1 to 8.")
 
 
 if __name__ == "__main__":
