@@ -218,7 +218,7 @@ def restock_item(stock):
         return
     amount = read_positive_int("Quantity to add: ")
     stock[name]["qty"] += amount
-    print(f" {name.title()} now has {stock[name]['qty']} in stock.")
+    print(f" {name.title()} now has {stock[name]['qty']} is there in stock.")
 
 
 def put_back(stock, record):
@@ -234,7 +234,7 @@ def create_bill(stock):
     while True:
         command = normalise_name(input("\nItem name / command: "))
         if command == "":
-            print(" Input can't be empty. Try again.")
+            print("Input can't be empty. Enter again.")
         elif command == "done":
             break
         elif command == "cancel":
@@ -244,7 +244,7 @@ def create_bill(stock):
             return
         elif command == "remove":
             if len(records) == 0:
-                print(" Nothing to remove.")
+                print("Nothing to Remove.")
             else:
                 removed = records.pop()
                 put_back(stock, removed)
@@ -366,4 +366,4 @@ def main():
 if __name__ == "__main__":
     main()
 
-######################################################################################################################
+
