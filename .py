@@ -11,6 +11,7 @@ Data is saved in plain .txt files (stock.txt and bills.txt).
 Run the doctests with:  python -m doctest -v grocery_billing_manager.py
 """
 
+
 # ---------------------------------------------------------------------------
 STOCK_FILE = "stock.txt"
 BILL_FILE = "bills.txt"
@@ -29,6 +30,7 @@ DEFAULT_STOCK = {
     "tea": {"price_unit": (120.0, "packet"), "qty": 15, "category": "beverages"},
     "potato": {"price_unit": (30.0, "kg"), "qty": 35, "category": "vegetables"},
 }
+
 
 def get_default_stock():
     return {name: dict(details) for name, details in DEFAULT_STOCK.items()}
@@ -126,18 +128,18 @@ def save_stock(stock,filename):
                 file.write(line + "\n")
         return True
     except OSError:
-        print("  Error: could not save the stock file.")
+        print("Error: could not save the stock file.")
         return False
 
 def save_bill(lines, filename):
     try:
-        with open(filename, "a", encoding="utf-8") as file:
+        with open(filename,"a", encoding="utf-8") as file:
             for line in lines:
                 file.write(line + "\n")
             file.write("\n")
         return True
     except OSError:
-        print("  Error: could not save the bill file.")
+        print("Error: could not save the bill file.")
         return False
 
 def format_cell(value, width):
@@ -151,7 +153,7 @@ def build_bill_lines(bill_no, records, subtotal, discount, gst, grand_total):
     widths = [18, 6, 10, 12]
     headings = ["Item", "Qty", "Rate", "Amount"]
     line = "-" * 46
-    lines = ["=" * 46, f"GROCERY BILL  No. {bill_no}".center(46), "=" * 46]
+    lines = ["=" * 46, f"Grocery Bill  No. {bill_no}".center(46), "=" * 46]
 
     header = ""
     for index in range(len(headings)):
@@ -169,7 +171,7 @@ def build_bill_lines(bill_no, records, subtotal, discount, gst, grand_total):
     lines.append(f"Discount ({DISCOUNT_PERCENT}%)".ljust(34) + f"{-discount:>12.2f}")
     lines.append(f"GST ({GST_PERCENT}%)".ljust(34) + f"{gst:>12.2f}")
     lines.append("=" * 46)
-    lines.append("GRAND TOTAL".ljust(34) + f"{grand_total:>12.2f}")
+    lines.append("Grand Total: ".ljust(34) + f"{grand_total:>12.2f}")
     lines.append("=" * 46)
     return lines
 
@@ -363,3 +365,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+######################################################################################################################
