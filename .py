@@ -1,16 +1,15 @@
 """
-Project 4: Grocery Billing and Stock Manager  (Group 4)
+Project 4: Grocery Billing and Stock Manager (Group 4)
 Group Members-
         Parth Gupta
         Piyush Kumar
-        Mohd. Arshad Ali
+        Mohd. Arsad Ali
         Manikanta Chaudhary
 A menu-driven program for a small grocery shop.
 No modules are imported; only built-in functions are used.
 Data is saved in plain .txt files (stock.txt and bills.txt).
 Run the doctests with:  python -m doctest -v grocery_billing_manager.py
 """
-
 
 # ---------------------------------------------------------------------------
 STOCK_FILE = "stock.txt"
@@ -30,7 +29,6 @@ DEFAULT_STOCK = {
     "tea": {"price_unit": (120.0, "packet"), "qty": 15, "category": "beverages"},
     "potato": {"price_unit": (30.0, "kg"), "qty": 35, "category": "vegetables"},
 }
-
 
 def get_default_stock():
     return {name: dict(details) for name, details in DEFAULT_STOCK.items()}
@@ -175,7 +173,6 @@ def build_bill_lines(bill_no, records, subtotal, discount, gst, grand_total):
     lines.append("=" * 46)
     return lines
 
-
 def show_stock(stock):
     print("\n" + "STOCK BY CATEGORY".center(54))
     for category in sorted(CATEGORIES):
@@ -266,8 +263,7 @@ def create_bill(stock):
             if is_low_stock(stock[command]["qty"]):
                 print(
                     f" WARNING: only {stock[command]['qty']} "
-                    f"{command.title()} left. Please restock!"
-                )
+                    f"{command.title()} left. Please restock!")
 
     if len(records) == 0:
         print(" Empty bill. Nothing saved.")
