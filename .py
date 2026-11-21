@@ -1,32 +1,24 @@
 """
 Project 4: Grocery Billing and Stock Manager  (Group 4)
-<<<<<<< HEAD
-
 Group Members-
         Parth Gupta
         Piyush Kumar
         Mohd. Arshad Ali
         Manikanta Chaudhary
-
-=======
->>>>>>> 3284ca0c9acd943ec4c73ae1ec8b9cbfd0c5e4aa
 A menu-driven program for a small grocery shop.
 No modules are imported; only built-in functions are used.
 Data is saved in plain .txt files (stock.txt and bills.txt).
 Run the doctests with:  python -m doctest -v grocery_billing_manager.py
 """
 
-# ---------------------------------------------------------------- constants
+# ---------------------------------------------------------------------------
 STOCK_FILE = "stock.txt"
 BILL_FILE = "bills.txt"
-GST_PERCENT = 5            # GST added on every bill
-DISCOUNT_LIMIT = 1000.0    # discount applies when subtotal reaches this
-DISCOUNT_PERCENT = 10      # discount percentage
-LOW_STOCK_LIMIT = 5        # warn when quantity is at or below this
-
-# A set of item categories (unique, quick-lookup data)
+GST_PERCENT = 5            
+DISCOUNT_LIMIT = 1000.0   
+DISCOUNT_PERCENT = 10     
+LOW_STOCK_LIMIT = 5        
 CATEGORIES = {"grains", "dairy", "snacks", "beverages", "vegetables"}
-
 DEFAULT_STOCK = {
     "rice": {"price_unit": (60.0, "kg"), "qty": 50, "category": "grains"},
     "wheat flour": {"price_unit": (45.0, "kg"), "qty": 40, "category": "grains"},
@@ -61,14 +53,12 @@ def read_positive_float(prompt):
         except ValueError:
             print(" Invalid input. Please enter a number such as 25 or 12.5.")
 
-
 def read_nonempty(prompt):
     while True:
         text = normalise_name(input(prompt))
         if text != "":
             return text
         print("Input cannot be empty. Try again.")
-
 
 def calculate_charges(subtotal):
     if subtotal >= DISCOUNT_LIMIT:
@@ -79,10 +69,8 @@ def calculate_charges(subtotal):
     gst = taxable * GST_PERCENT / 100
     return discount, gst, taxable + gst
 
-
 def is_low_stock(quantity):
     return quantity <= LOW_STOCK_LIMIT
-
 
 def next_bill_number(filename):
     try:
@@ -91,7 +79,6 @@ def next_bill_number(filename):
     except OSError:
         saved_bills = 0
     return 1001 + saved_bills
-
 
 def load_stock(filename):
     stock = {}
@@ -123,7 +110,6 @@ def load_stock(filename):
         return get_default_stock()
     return stock
 
-
 def save_stock(stock,filename):
     try:
         with open(filename, "w", encoding="utf-8") as file:
@@ -143,7 +129,6 @@ def save_stock(stock,filename):
         print("  Error: could not save the stock file.")
         return False
 
-
 def save_bill(lines, filename):
     try:
         with open(filename, "a", encoding="utf-8") as file:
@@ -155,14 +140,12 @@ def save_bill(lines, filename):
         print("  Error: could not save the bill file.")
         return False
 
-
 def format_cell(value, width):
     if isinstance(value, float):
         return f"{value:.2f}".rjust(width)
     if isinstance(value, int):
         return str(value).rjust(width)
     return str(value).ljust(width)
-
 
 def build_bill_lines(bill_no, records, subtotal, discount, gst, grand_total):
     widths = [18, 6, 10, 12]
