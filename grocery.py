@@ -196,5 +196,49 @@ def restock(stock):
     else:
         print("Item not found.")
 
+def low_stock(stock):
+    low = [n for n in sorted(stock) if stock[n][2] <= LOW]
+    print("\nLOW STOCK ITEMS" if low else "\n  Stock of each item is correct.")
+    for n in low:
+        print(f" {n.title():<16} only {stock[n][2]} left")
+
+def past_bills():
+    text = read_file(BILL_FILE)
+    print("\n" + "\n".join(text.split("\n")[-20:]) if text else "No bill is saved yet.")
+
+def main():
+    stock = load_stock()
+    menu = ["View stock", "Create a bill", "Add a new item", "Restock an item",
+            "Low stock report", "View saved bills", "Save stock now", "Exit"]
+    while True:
+        print("\n" + "=" * 40 + "\n  GROCERY BILLING AND STOCK MANAGER\n" + "=" * 40)
+        for i, name in enumerate(menu, 1):
+            print(f" {i}. {name}")
+        choice = input("Choose an option (1-8): ").strip()
+
+        if choice == "1":
+            show_stock(stock)
+        elif choice == "2":
+            create_bill(stock)
+        elif choice == "3":
+            add_item(stock)
+        elif choice == "4":
+            restock(stock)
+        elif choice == "5":
+            low_stock(stock)
+        elif choice == "6":
+            past_bills()
+        elif choice == "7":
+            print("  Stock saved." if save_stock(stock) else "")
+        elif choice == "8":
+            save_stock(stock)
+            print("Stock saved. Goodbye!")
+            break
+        else:
+            print("Wrong choice.Choose number between 1 to 8.")
+        if choice in ("3", "4"):
+            save_stock(stock)
+            
+main()
 
 
