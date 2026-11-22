@@ -45,7 +45,6 @@ def read_file(name):
         return ""
 # ---------- RECURSION ----------
 def read_number(prompt, kind):
-    """Sahi number milne tak khud ko dobara call karta hai."""
     try:
         value = kind(input(prompt))
         if value > 0:
@@ -129,6 +128,6 @@ def create_bill(stock):
         if save_stock(stock):
             print("Bill saved to", BILL_FILE, "and stock updated in", STOCK_FILE)
     except OSError:
-        print("Error: bill save nahi hua")
+        print("Error: bill not saved.")
 
 
