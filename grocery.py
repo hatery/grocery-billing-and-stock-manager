@@ -194,7 +194,7 @@ def restock(stock):
         stock[name][2] += read_number("Quantity to add: ", int)
         print(f" {name.title()} is {stock[name][2]} in stock .")
     else:
-        print("  Item not found.")
+        print("Item not found.")
 
 
 
