@@ -43,7 +43,6 @@ def read_file(name):
             return f.read()
     except OSError:
         return ""
-# ---------- RECURSION ----------
 def read_number(prompt, kind):
     try:
         value = kind(input(prompt))
@@ -90,9 +89,6 @@ def add_items(stock, records):
             if item[2] <= LOW:
                 print(f"  WARNING: only {item[2]} {cmd.title()} is left. Do Restock !")
     return add_items(stock, records)
-
-
-# ---------- BILL ----------
 def create_bill(stock):
     print("\nWrite item name to add in bill.")
     print("Commands: 'done' = finish, 'remove' = remove last item , 'cancel' = bill cancel")
@@ -129,5 +125,76 @@ def create_bill(stock):
             print("Bill saved to", BILL_FILE, "and stock updated in", STOCK_FILE)
     except OSError:
         print("Error: bill not saved.")
+def create_bill(stock):
+    print("\nWrite item name to add in bill.")
+    print("Commands: 'done' = finish, 'remove' = remove last item , 'cancel' = bill cancel")
+    records = add_items(stock, [])
+    if records is None:
+        return
+    if not records:
+        print("  Bill is empty. Nothing is saved.")
+        return
+
+    subtotal = total_amount(records)
+    discount = subtotal * DISCOUNT / 100 if subtotal >= DISCOUNT_LIMIT else 0.0
+    gst = (subtotal - discount) * GST / 100
+    bill_no = 1001 + read_file(BILL_FILE).count("GROCERY BILL")
+
+    line, bar = "-" * 46, "=" * 46
+    lines = [bar, f"GROCERY BILL  No. {bill_no}".center(46), bar,
+             f"{'Item':<18}{'Qty':>6}{'Rate':>10}{'Amount':>12}", line]
+    lines += [f"{n:<18}{q:>6}{r:>10.2f}{a:>12.2f}" for n, q, r, a in records]
+    lines += [line, f"{'Subtotal':<34}{subtotal:>12.2f}",
+              f"{f'Discount ({DISCOUNT}%)':<34}{-discount:>12.2f}",
+              f"{f'GST ({GST}%)':<34}{gst:>12.2f}", bar,
+              f"{'GRAND TOTAL':<34}{subtotal - discount + gst:>12.2f}", bar]
+    print("\n" + "\n".join(lines))
+
+    top = sorted(records, key=lambda r: r[3], reverse=True)[:3]
+    print("Top items by amount:", ", ".join(r[0] for r in top))
+    if discount > 0:
+        print(f"You saved Rs {discount:.2f} with the discount!")
+
+    try:
+        with open(BILL_FILE, "a") as f:
+            f.write("\n".join(lines) + "\n\n")
+        if save_stock(stock):
+            print("Bill saved to", BILL_FILE, "and stock updated in", STOCK_FILE)
+    except OSError:
+        print("  Error: bill not saved.")
+def show_stock(stock):
+    print("\n" + "STOCK BY CATEGORY".center(54))
+    for cat in CATEGORIES:
+        print("\n[" + cat.title() + "]")
+        items = [n for n in sorted(stock) if stock[n][3] == cat]
+        for n in items:
+            p, u, q, _ = stock[n]
+            note = "  <-- LOW STOCK" if q <= LOW else ""
+            print(f" {n.title():<16} Rs {p:>7.2f}/{u:<7} Qty: {q:>4}{note}")
+        if not items:
+            print(" (no items)")
+def add_item(stock):
+    name = " ".join(input("Item name: ").lower().split())
+    if name == "":
+        print("  Name can't be empty.")
+    elif name in stock:
+        print("Item already exist. Use 'Restock'.")
+    else:
+        cat = input("Category (" + ", ".join(CATEGORIES) + "): ").strip().lower()
+        if cat not in CATEGORIES:
+            print("  Category is wrong. Item not added.")
+            return
+        price = read_number("Price per unit (Rs): ", float)
+        unit = input("Unit (kg / packet / piece / litre): ").strip().lower()
+        stock[name] = [price, unit, read_number("Quantity in stock: ", int), cat]
+        print(" Added", name.title() + ".")
+def restock(stock):
+    name = " ".join(input("Item to restock: ").lower().split())
+    if name in stock:
+        stock[name][2] += read_number("Quantity to add: ", int)
+        print(f" {name.title()} is {stock[name][2]} in stock .")
+    else:
+        print("  Item not found.")
+
 
 
