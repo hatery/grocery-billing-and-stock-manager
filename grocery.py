@@ -10,10 +10,10 @@ STOCK_FILE, BILL_FILE = "stock.txt", "bills.txt"
 GST, DISCOUNT, DISCOUNT_LIMIT, LOW = 5, 10, 1000, 5
 CATEGORIES = ["beverages", "dairy", "grains", "snacks", "vegetables"]
 DEFAULT = {  # name: [price, unit, qty, category]
-    "rice": [60.0, "kg", 50, "grains"], "wheat flour": [45.0, "kg", 40, "grains"],
-    "milk": [28.0, "packet", 30, "dairy"], "butter": [55.0, "piece", 4, "dairy"],
-    "biscuits": [10.0, "packet", 60, "snacks"], "chips": [20.0, "packet", 25, "snacks"],
-    "tea": [120.0, "packet", 15, "beverages"], "potato": [30.0, "kg", 35, "vegetables"]}
+    "rice": [60.0,"kg",50,"grains"],"wheat flour": [45.0,"kg",40,"grains"],
+    "milk": [28.0,"packet",30,"dairy"],"butter": [55.0,"piece",4,"dairy"],
+    "biscuits": [10.0,"packet",60,"snacks"],"chips": [20.0,"packet",25,"snacks"],
+    "tea": [120.0,"packet",15,"beverages"], "potato": [30.0,"kg",35,"vegetables"]}
 def load_stock():
     stock = {}
     try:
@@ -50,7 +50,7 @@ def read_number(prompt, kind):
             return value
         print("  Number should be greater than 0.")
     except ValueError:
-        print("  Wrong input. Write correct number.")
+        print("...")
     return read_number(prompt, kind)
 
 def total_amount(records):
@@ -125,43 +125,7 @@ def create_bill(stock):
             print("Bill saved to", BILL_FILE, "and stock updated in", STOCK_FILE)
     except OSError:
         print("Error: bill not saved.")
-def create_bill(stock):
-    print("\nWrite item name to add in bill.")
-    print("Commands: 'done' = finish, 'remove' = remove last item , 'cancel' = bill cancel")
-    records = add_items(stock, [])
-    if records is None:
-        return
-    if not records:
-        print("  Bill is empty. Nothing is saved.")
-        return
-
-    subtotal = total_amount(records)
-    discount = subtotal * DISCOUNT / 100 if subtotal >= DISCOUNT_LIMIT else 0.0
-    gst = (subtotal - discount) * GST / 100
-    bill_no = 1001 + read_file(BILL_FILE).count("GROCERY BILL")
-
-    line, bar = "-" * 46, "=" * 46
-    lines = [bar, f"GROCERY BILL  No. {bill_no}".center(46), bar,
-             f"{'Item':<18}{'Qty':>6}{'Rate':>10}{'Amount':>12}", line]
-    lines += [f"{n:<18}{q:>6}{r:>10.2f}{a:>12.2f}" for n, q, r, a in records]
-    lines += [line, f"{'Subtotal':<34}{subtotal:>12.2f}",
-              f"{f'Discount ({DISCOUNT}%)':<34}{-discount:>12.2f}",
-              f"{f'GST ({GST}%)':<34}{gst:>12.2f}", bar,
-              f"{'GRAND TOTAL':<34}{subtotal - discount + gst:>12.2f}", bar]
-    print("\n" + "\n".join(lines))
-
-    top = sorted(records, key=lambda r: r[3], reverse=True)[:3]
-    print("Top items by amount:", ", ".join(r[0] for r in top))
-    if discount > 0:
-        print(f"You saved Rs {discount:.2f} with the discount!")
-
-    try:
-        with open(BILL_FILE, "a") as f:
-            f.write("\n".join(lines) + "\n\n")
-        if save_stock(stock):
-            print("Bill saved to", BILL_FILE, "and stock updated in", STOCK_FILE)
-    except OSError:
-        print("  Error: bill not saved.")
+    
 def show_stock(stock):
     print("\n" + "STOCK BY CATEGORY".center(54))
     for cat in CATEGORIES:
@@ -240,5 +204,3 @@ def main():
             save_stock(stock)
             
 main()
-
-
